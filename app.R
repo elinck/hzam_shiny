@@ -11,10 +11,12 @@ ui <- fluidPage(
     # control panel 
     sidebarLayout(
         sidebarPanel(
+            div("WARNING: changing parameter values before a simulation ends will trigger an error message", style = "color:#8B0000;font-size:75%"),
+            div(style="height:1.5vh;"),
             actionButton("new","Reset Simulation",width="100%"),
-            div(helpText("Press to initiate or reset a simulation"),style="font-size:75%"),
+            div(helpText("1: Press to initiate or reset a simulation"),style="font-size:75%"),
             actionButton("run","Run Simulation",width="100%"),
-            div(helpText("Press to run simulation"),style="font-size:75%"),
+            div(helpText("2: Press to run simulation"),style="font-size:75%"),
             numericInput("max_generations","Number of Generations",20,min=1,max=500),
             numericInput("update_interval","Plot Update Interval",10,min=1,max=500),
             selectInput('mating_trait_dominance', 'Mating Trait Expression:', c("Dominant / Partially Dominant"=1,
@@ -111,7 +113,9 @@ server <- function(input, output, session) {
                 # function to run simulation for plot update interval
                 new_pop <- run_simulation(pop_matrix=matrix(),hybrid_fitness = input$hybrid_fitness, pref_ratio = input$pref_ratio,
                                           meandispersal = input$meandispersal, growth_rate = input$growth_rate, dom_coefficient=input$dom_coefficient, 
-                                          mating_trait_dominance = input$mating_trait_dominance, K_half = input$K_half, input$update_interval)
+                                          mating_trait_dominance = input$mating_trait_dominance, K_half = input$K_half, input$update_interval,
+                                          neutral_loci = input$neutral_loci, 
+                                          male_trait_loci = input$male_trait_loci)
                 
                 # assign last state to population matrix
                 matrix(new_pop)
