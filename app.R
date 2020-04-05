@@ -72,7 +72,7 @@ server <- function(input, output, session) {
     
     # set up reactiveVal with population information
     matrix <- reactiveVal()
-    vals <- reactiveValues(counter = 0, done=0, initial=0)
+    vals <- reactiveValues(counter = 0, done=0, initial=0, neut=0, traitl=0)
     
     # run when reset button is pushed to generate blank simulation 
     observeEvent(input$new, ignoreNULL = F,{
@@ -85,6 +85,11 @@ server <- function(input, output, session) {
         
         # indicates program shouldn't fit cline
         vals$initial <- 0
+        
+        # trait counters: ignore
+        vals$neut <- 0
+        
+        vals$traitl <- 0
         
         # calls function to make population matrix
         pop_matrix <- make_matrix(K_half = input$K_half, neutral_loci = input$neutral_loci, 
@@ -107,6 +112,7 @@ server <- function(input, output, session) {
                 # validation if program has run
                 if(vals$done==1){
                     matrix(NULL)
+                    vals$counter <- vals$counter + 1 
                     validate(need(is.null(matrix())==FALSE,""))
                 }
                 
@@ -133,6 +139,8 @@ server <- function(input, output, session) {
             # this indicates the simulation has finished running
             if (isolate(vals$counter) >= (input$max_generations / input$update_interval)){
                 vals$done <- 1
+                vals$neut <- input$neutral_loci
+                vals$traitl <- input$male_trait_loci
             }
             
         })
@@ -143,7 +151,12 @@ server <- function(input, output, session) {
     # format plot data every time pop matrix is updated
     plot.data <- reactive({
         
-        format_plot_data(sim_output = matrix(), num_trait_loci = input$male_trait_loci, neutral_loci = input$neutral_loci)
+        if(vals$done==1){        
+            format_plot_data(sim_output = matrix(), num_trait_loci = vals$traitl, neutral_loci = vals$neut)
+        } else {
+            format_plot_data(sim_output = matrix(), num_trait_loci = input$male_trait_loci, neutral_loci = input$neutral_loci)
+            
+        }
         
     })
     
