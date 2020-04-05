@@ -357,7 +357,6 @@ plot_freqs <-  function(format_output, fit_neutral=FALSE, fit_trait=FALSE){
   p <- ggplot(format_output, aes(x=location, y=freqs, color=vars)) +
     geom_jitter(size=2,alpha=0.3,width=0.0075,height=0.0075,pch=21,stroke=2) +
     theme_classic() +
-    #scale_color_viridis_d(labels=c("neutral loci","trait loci"))+ 
     scale_color_manual(values = c("red3","steelblue3"),
                        labels=c("Neutral loci","Mating trait loci")) +
     ylab("Hybrid Index") +
