@@ -22,7 +22,7 @@ ui <- fluidPage(
             selectInput('mating_trait_dominance', 'Mating Trait Expression:', c("Dominant / Partially Dominant"=1,
                                                                                 "Additive"=2)),
             sliderInput("dom_coefficient","Partial Dominance Coefficient",value=0.75,min=0,max=1),
-            div(helpText("Proportion of homozygous dominant phenotype expressed by heterozygotes"),style="font-size:75%"),
+            div(helpText("Proportion of homozygous dominant (hybrid index=1.0) phenotype expressed by heterozygotes"),style="font-size:75%"),
             sliderInput("K_half","Per-species carrying capacity",800,min=400,max=1600,step = 200),
             sliderInput("hybrid_fitness","Hybrid Fitness",value=0.98,min=0,max=1),
             sliderInput("pref_ratio","Assortative Mating Preference Ratio",value=0.75,min=0.00001,max=0.99999),
