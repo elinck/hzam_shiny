@@ -62,8 +62,6 @@ run_simulation <- function(pop_matrix=input, sigma_comp=0.1, range_limit_left=0,
                            dom_coefficient=0.55, hybrid_fitness=1,K_half=800,male_trait_loci=1,female_trait_loci=1,beginning_columns=1,
                            assort_mating=1,same_loci_MTL_UDL=TRUE,neutral_loci=3){
   
-  print("yes")
-  
   MTL_col_start <- beginning_columns + 1
   MTL_col_end <- beginning_columns + 2*male_trait_loci
   if (assort_mating == 1) {

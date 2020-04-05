@@ -17,17 +17,17 @@ ui <- fluidPage(
             div(helpText("Press to run simulation"),style="font-size:75%"),
             numericInput("max_generations","Number of Generations",20,min=1,max=500),
             numericInput("update_interval","Plot Update Interval",10,min=1,max=500),
-            numericInput("K_half","Per-species carrying capacity",800,min=1,max=2000),
             selectInput('mating_trait_dominance', 'Mating Trait Expression:', c("Dominant / Partially Dominant"=1,
                                                                                 "Additive"=2)),
             sliderInput("dom_coefficient","Partial Dominance Coefficient",value=0.75,min=0,max=1),
-            div(helpText("Indicates proportion of homozygous dominant phenotype expressed by heterozygotes"),style="font-size:75%"),
+            div(helpText("Proportion of homozygous dominant phenotype expressed by heterozygotes"),style="font-size:75%"),
+            sliderInput("K_half","Per-species carrying capacity",800,min=400,max=1600,step = 200),
             sliderInput("hybrid_fitness","Hybrid Fitness",value=0.98,min=0,max=1),
             sliderInput("pref_ratio","Assortative Mating Preference Ratio",value=0.75,min=0.00001,max=0.99999),
             div(helpText("Indicates ratio of heterospecific : homospecific matings"),style="font-size:75%"),
-            sliderInput("male_trait_loci","Number of Trait Loci",value=2,min=1,max=5),
-            sliderInput("neutral_loci","Number of Neutral Loci",value=3,min=1,max=10),
-            sliderInput("meandispersal", "Average Dispersal Radius",value=0.01,min=0.0001,max=0.25),
+            sliderInput("male_trait_loci","Number of Trait Loci",value=3,min=1,max=5),
+            sliderInput("neutral_loci","Number of Neutral Loci",value=3,min=1,max=5),
+            sliderInput("meandispersal", "Average Dispersal Radius",value=0.01,min=0.001,max=0.1,step=0.001),
             sliderInput("growth_rate", "Population Growth Rate",value=1.05,min=1,max=1.5),
             checkboxInput("fit_neutral","Fit Neutral Cline",value = F),
             checkboxInput("fit_trait","Fit Trait Cline",value = F)
@@ -45,12 +45,19 @@ ui <- fluidPage(
             div(p("HZAM, originally written by", a(href="https://www.zoology.ubc.ca/~irwin/irwinlab/",'Darren Irwin', .noWS = "outside"), 
                   "and adapted for Shiny by", a(href="https://elinck.org/",'Ethan Linck,', .noWS = "outside"), "is a program to
                 simulate the influence of assortative mating in a one-dimensional hybrid zone in concert with the 
-                      effects of underdominance, variation in dispersal, and other parameters. Code is available ",
-                  a(href="http://github.com/elinck/hzam_shiny",'here.', .noWS = "outside"), 
-                  "If you found this program useful, please cite the following publication:",
-                  a(href="https://doi.org/10.1086/708529",
-                    'Irwin, D.E. In press. Assortative mating in hybrid zones is remarkably ineffective in promoting speciation. 
-                         American Naturalist.', .noWS = c("after-begin", "before-end"))))
+                      effects of underdominance, variation in dispersal, and other parameters. Code for the program 
+                  (and a version that can be run locally) is available ",
+                  a(href="http://github.com/elinck/hzam_shiny",'here.', .noWS = "outside"),
+                "If you find bugs or have feature suggestions, please write me at ",
+                a(href="mailto:ethanblinck@gmail.com","ethanblinck@gmail.com.", 
+                  .noWS = c("after-begin", "before-end")))), 
+            div(style="height:1.5vh;"),
+            h4("Citing HZAM"),
+            div(p("If you found this program useful, please cite the following publication:",
+                    a(href="https://doi.org/10.1086/708529",
+                      'Irwin, D.E. In press. Assortative mating in hybrid zones is remarkably ineffective in promoting speciation. 
+                         American Naturalist.', .noWS = c("after-begin", "before-end"))
+                    ))
         )
     )
 )
@@ -78,7 +85,8 @@ server <- function(input, output, session) {
         vals$initial <- 0
         
         # calls function to make population matrix
-        pop_matrix <- make_matrix()
+        pop_matrix <- make_matrix(K_half = input$K_half, neutral_loci = input$neutral_loci, 
+                                  male_trait_loci = input$male_trait_loci)
         
         # weird reactive value assignment thing
         matrix(pop_matrix)
