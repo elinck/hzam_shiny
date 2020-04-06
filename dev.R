@@ -362,10 +362,21 @@ plot_freqs <-  function(format_output, fit_neutral=FALSE, fit_trait=FALSE){
     ylab("Hybrid Index") +
     ylim(0,1) +
     xlab("Transect Location") +
+    guides(color = guide_legend(reverse=TRUE)) +
     theme(axis.title = element_text(size=15),
           legend.position = "bottom",
           legend.title = element_blank(),
           legend.text = element_text(size=12))
+  
+  if(fit_trait==T){
+    model_t <- gam(freqs ~ s(location, bs="cr"), data=subset(format_output,vars=="traits"), quasibinomial(link = "logit"),
+                   method = "ML", optimizer = c("outer","bfgs"))
+    model_tp <- predict_gam(model_t, length_out = 10000)
+    model_tp$fit <- inv.logit(model_tp$fit)
+    colnames(model_tp) <- c("location", "freqs", "se.fit")
+    p <- p + geom_smooth(data = model_tp, inherit.aes = FALSE, 
+                         mapping=aes(location, freqs,linetype="Mating trait loci"),col="black",se=FALSE)
+  }
   
   if(fit_neutral==T){
     model_n <- gam(freqs ~ s(location, bs="cr"), data=subset(format_output,vars=="neutral"), quasibinomial(link = "logit"),
@@ -374,20 +385,10 @@ plot_freqs <-  function(format_output, fit_neutral=FALSE, fit_trait=FALSE){
     model_np$fit <- inv.logit(model_np$fit)
     colnames(model_np) <- c("location", "freqs", "se.fit")
     p <- p + geom_smooth(data = model_np, inherit.aes = FALSE, 
-                         mapping=aes(location, freqs),linetype="solid",col="black",se=FALSE) +
-      labs(linetype="Cline")
-    
+                         mapping=aes(location, freqs,linetype="Neutral loci"),col="black",se=FALSE)
+
   }
-  if(fit_trait==T){
-    model_t <- gam(freqs ~ s(location, bs="cr"), data=subset(format_output,vars=="traits"), quasibinomial(link = "logit"),
-                   method = "ML", optimizer = c("outer","bfgs"))
-    model_tp <- predict_gam(model_t, length_out = 10000)
-    model_tp$fit <- inv.logit(model_tp$fit)
-    colnames(model_tp) <- c("location", "freqs", "se.fit")
-    p <- p + geom_smooth(data = model_tp, inherit.aes = FALSE, 
-                         mapping=aes(location, freqs),linetype="dashed",col="black",se=FALSE) +
-      labs(linetype="Cline")
-  }
+
   return(p)
 }
 

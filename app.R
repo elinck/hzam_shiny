@@ -27,12 +27,12 @@ ui <- fluidPage(
             sliderInput("hybrid_fitness","Hybrid Fitness",value=0.98,min=0,max=1),
             sliderInput("pref_ratio","Assortative Mating Preference Ratio",value=0.75,min=0.00001,max=0.99999),
             div(helpText("Indicates ratio of heterospecific : homospecific matings"),style="font-size:75%"),
-            sliderInput("male_trait_loci","Number of Trait Loci",value=3,min=1,max=5),
+            sliderInput("male_trait_loci","Number of Trait Loci",value=2,min=1,max=5),
             sliderInput("neutral_loci","Number of Neutral Loci",value=3,min=1,max=5),
             sliderInput("meandispersal", "Average Dispersal Radius",value=0.01,min=0.001,max=0.1,step=0.001),
             sliderInput("growth_rate", "Population Growth Rate",value=1.05,min=1,max=1.5),
-            checkboxInput("fit_neutral","Fit Neutral Cline",value = F),
-            checkboxInput("fit_trait","Fit Trait Cline",value = F)
+            checkboxInput("fit_trait","Fit Trait Cline",value = F),
+            checkboxInput("fit_neutral","Fit Neutral Cline",value = F)
         ),
         
         # plot and table panel (with explainer)
@@ -58,7 +58,10 @@ ui <- fluidPage(
             div(p("If you found this program useful, please cite the following publication:",
                     a(href="https://doi.org/10.1086/708529",
                       'Irwin, D.E. In press. Assortative mating in hybrid zones is remarkably ineffective in promoting speciation. 
-                         American Naturalist.', .noWS = c("after-begin", "before-end"))
+                         American Naturalist.', .noWS = c("after-begin", "before-end")),
+                      "The original code for HZAM can be found in the following Dryad respository:",
+                      a(href="https://doi.org/10.5061/dryad.k98sf7m30",'Irwin, D.E. 2019., Assortative mating in hybrid zones is remarkably ineffective in promoting speciation.
+                        Dryad, Dataset. DOI: 10.5061/dryad.k98sf7m30.',.noWS = c("after-begin", "before-end"))
                     ))
         )
     )
